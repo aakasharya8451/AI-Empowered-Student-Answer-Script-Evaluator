@@ -12,7 +12,7 @@ from controller.evaluate import startEvaluate
 evaluate_api = Blueprint('evaluate_api', __name__)
 
 
-@evaluate_api.route('/evaluate', methods=["GET"])
+@evaluate_api.route('/evaluate', methods=["POST"])
 @jwt_required()
 def evaluate():
     """Evaluate the performance of the authenticated user.
@@ -28,7 +28,10 @@ def evaluate():
     else:
         testid = request.json.get('testid')
         try:
+            print(testid)
             return startEvaluate(testid)
         except Exception as e:
-            return jsonify({"msg": "Internal server error"}), 500
+            return jsonify({"msg": f"Internal server error {e}"}), 500
             
+
+# startEvaluate("PczMwm2P78Hi85gQzER8")

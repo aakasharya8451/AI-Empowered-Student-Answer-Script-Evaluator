@@ -7,10 +7,10 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from config.config_firebase import FirebaseHandler
+# from config.config_firebase import FirebaseHandler
 
 
-FirebaseHandler()
+# FirebaseHandler()
 
 # from app import jwt, redis_client
 
@@ -63,4 +63,5 @@ def firebase_auth_test(id_token):
                         "msg": "Authentication Successful"}), 200
     
     except Exception as e:
-        return jsonify({'error': 'Failed to authenticate'}), 401
+        print(e)
+        return jsonify({f'error': f'Failed to authenticate - {e}'}), 401

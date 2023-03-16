@@ -6,8 +6,9 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from config.config_firebase import FirebaseHandler
+# from config.config_firebase import FirebaseHandler
 from utils.custom_errors import FirebaseQuerryError
+from config.config_firebase import db
 
 
 class FirebaseQuery:
@@ -19,7 +20,7 @@ class FirebaseQuery:
         :type testid: str
         """
         self.testid = testid
-        self.firebase_handler = FirebaseHandler()
+        # self.firebase_handler = FirebaseHandler()
 
     def fetchTests(self) -> Dict[str, Dict[str, str]]:
         """
@@ -30,7 +31,7 @@ class FirebaseQuery:
         :raises FirebaseQuerryError: If there is an error fetching test data from Firebase
         """
         try:
-            student_collections_ref = self.firebase_handler.db.collection(
+            student_collections_ref = db.collection(
                 u'tests').document(u'{}'.format(self.testid))
             student_collections = student_collections_ref.collections()
 
@@ -54,7 +55,7 @@ class FirebaseQuery:
         :raises FirebaseQuerryError: If there is an error fetching question data from Firebase
         """
         try:
-            test_question_set = self.firebase_handler.db.collection(
+            test_question_set = db.collection(
                 u'questionset').document(u'{}'.format(self.testid)).get().to_dict()
             return test_question_set
 
@@ -71,7 +72,7 @@ class FirebaseQuery:
         :raises FirebaseQuerryError: if there was an error updating the marks.
         """
         try:
-            student_collections_ref = self.firebase_handler.db.collection(
+            student_collections_ref = db.collection(
                 u'tests').document(u'{}'.format(self.testid))
             student_collections = student_collections_ref.collections()
             for student in student_collections:
@@ -79,7 +80,7 @@ class FirebaseQuery:
                     path = u"tests/{}/{}/{}".format(self.testid,
                                                     student.id, question.id)
                     marks = assigned_marks.get(student.id, "").get(question.id)
-                    doc_ref = self.firebase_handler.db.document(path)
+                    doc_ref = db.document(path)
                     doc_ref.update({u'marks': marks})
             return True
         except Exception as e:

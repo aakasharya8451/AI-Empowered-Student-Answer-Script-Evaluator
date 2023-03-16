@@ -5,13 +5,6 @@ import sys
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-# from evaluation_engine.pattern_matching import fixed_pattern
-# from evaluation_engine.pattern_matching import partial_pattern
-# from evaluation_engine.marks_assigner import marks_assigner
-# from pattern_matching import fixed_pattern
-# from .pattern_matching import partial_pattern
-# from .marks_assigner import marks_assigner
-
 from evaluation_engine.pattern_matching.fixed_pattern import FixedPatternMatching
 from evaluation_engine.pattern_matching.partial_pattern import PartialPatternMatching
 from evaluation_engine.marks_assigner.marks_assigner import MarksAssigner

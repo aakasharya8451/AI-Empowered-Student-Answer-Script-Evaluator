@@ -7,6 +7,7 @@ current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
 from models.firebase_query import FirebaseQuery
+from evaluation_engine.evaluator import Evaluator
 
 
 def startEvaluate(testid):

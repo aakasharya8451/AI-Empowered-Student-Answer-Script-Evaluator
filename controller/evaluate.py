@@ -19,10 +19,10 @@ def startEvaluate(testid):
     request = {}
     request["question_set"] = question_set
     request["answer_set"] = answer_set
-    # print(request)
+    print(request)
     allotted_marks = Evaluator(request).evaluate()
     print(allotted_marks)
     fetch_query.pushMarks(allotted_marks)
     return jsonify({
-        "user": testid,
-        'Evaluation': "Started"}), 200
+        "testid": testid,
+        'Evaluation': "Completed"}), 200

@@ -75,7 +75,7 @@ class Evaluator:
                 except Exception as e:
                     # If an error occurs while calculating marks, raise ValueError
                     raise ValueError(
-                        f"Error occurred while evaluating answer {j + 1} of student {i} for question q{j + 1} keywords {keywords} and marks {max_marks}: {e}")
+                        f"Error occurred while evaluating answer {question} of student {student_id} for question {question} keywords {keywords} and marks {max_marks}: {e}")
 
             # Store the calculated marks for the current student's answers
             response_marks[student_id] = per_student_marks

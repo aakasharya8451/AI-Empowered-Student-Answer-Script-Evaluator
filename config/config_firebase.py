@@ -7,6 +7,8 @@ sys.path.insert(0, current_working_directory)
 
 from utils.custom_errors import FirebaseConnectionError
 
+# print(os.getenv('TTTTT'),"getenv")
+
 
 # class FirebaseHandler:
 #     def __init__(self, name=None) -> None:
@@ -26,8 +28,10 @@ from utils.custom_errors import FirebaseConnectionError
 #             raise FirebaseConnectionError(
 #                 f'Error connecting to Firebase Firestore: {e}')
 try:
-    cred = credentials.Certificate(os.path.join(
-        current_working_directory, os.getenv('FIREBASE_CREDENTIALS')))
+    # cred = credentials.Certificate(os.path.join(
+    #     current_working_directory, os.getenv('FIREBASE_CREDENTIALS')))
+    
+    cred = credentials.Certificate('C:\\Users\AAYUSH YASH\Desktop\\test-api\\test-api\\firebase-credentials.json')
     firebase = initialize_app(cred)
     db = firestore.client()
     print('Connected to Firebase Firestore')

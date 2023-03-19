@@ -1,5 +1,4 @@
-from firebase_admin import credentials, initialize_app, firestore, delete_app, get_app
-from dotenv import load_dotenv
+from firebase_admin import credentials, initialize_app, firestore
 import sys
 import os
 current_working_directory = os.getcwd()
@@ -7,35 +6,20 @@ sys.path.insert(0, current_working_directory)
 
 from utils.custom_errors import FirebaseConnectionError
 
-# print(os.getenv('TTTTT'),"getenv")
 
+class FirebaseHandler:
+    def __init__(self) -> None:
+        """Initializes a new instance of the FirebaseHandler class.
 
-# class FirebaseHandler:
-#     def __init__(self, name=None) -> None:
-#         """Initializes a new instance of the FirebaseHandler class.
+        :raises FirebaseConnectionError: If there is an error connecting to Firebase.
+        """
 
-#         :raises FirebaseConnectionError: If there is an error connecting to Firebase.
-#         """
-
-#         try:
-#             cred = credentials.Certificate(os.path.join(
-#                 current_working_directory, os.getenv('FIREBASE_CREDENTIALS')))
-#             self.firebase = initialize_app(cred, name=name)
-#             self.db = firestore.client()
-#             print('Connected to Firebase Firestore')
+        try:
+            cred = credentials.Certificate(os.path.join(
+                current_working_directory, os.getenv('FIREBASE_CREDENTIALS')))
+            self.firebase = initialize_app(cred)
+            print('Connected to Firebase Firestore')
             
-#         except Exception as e:
-#             raise FirebaseConnectionError(
-#                 f'Error connecting to Firebase Firestore: {e}')
-try:
-    # cred = credentials.Certificate(os.path.join(
-    #     current_working_directory, os.getenv('FIREBASE_CREDENTIALS')))
-    
-    cred = credentials.Certificate('C:\\Users\AAYUSH YASH\Desktop\\test-api\\test-api\\firebase-credentials.json')
-    firebase = initialize_app(cred)
-    db = firestore.client()
-    print('Connected to Firebase Firestore')
-
-except Exception as e:
-    raise FirebaseConnectionError(
-        f'Error connecting to Firebase Firestore: {e}')
+        except Exception as e:
+            raise FirebaseConnectionError(
+                f'Error connecting to Firebase Firestore: {e}')

@@ -16,7 +16,6 @@ class Evaluator:
 
         :param requests: Dictionary containing data for evaluation purpose.
         :type requests: dict
-        
         :raises ValueError: If answer_set or question_set keys are not found in requests dictionary.
         """
 
@@ -34,7 +33,6 @@ class Evaluator:
 
         :return: Dictionary containing marks for each question and answer for each student.
         :rtype: dict[list[float]]
-
         :raises ValueError: If the keywords or maximum marks are not found for a question.
         """
 
@@ -56,11 +54,17 @@ class Evaluator:
 
                 # Check if keywords or maximum marks are None, raise ValueError if so
                 if keywords is None:
-                    raise ValueError(f"Keywords not found for question {question}")
+                    raise ValueError(
+                        f"Keywords not found for question {question}")
 
                 if max_marks is None:
                     raise ValueError(
                         f"Maximum marks not found for question {question}")
+
+                # If answer is empty string, assigning 0.0 marks
+                if not answer.strip():
+                    per_student_marks[question] = 0.0
+                    continue
 
                 try:
                     # Run fixed and partial pattern matching to calculate marks
@@ -75,7 +79,7 @@ class Evaluator:
                 except Exception as e:
                     # If an error occurs while calculating marks, raise ValueError
                     raise ValueError(
-                        f"Error occurred while evaluating answer {question} of student {student_id} for question {question} keywords {keywords} and marks {max_marks}: {e}")
+                        f"Error occurred while evaluating answer '{answer}' of student {student_id} for question {question} keywords {keywords} and marks {max_marks}: {e}")
 
             # Store the calculated marks for the current student's answers
             response_marks[student_id] = per_student_marks
@@ -90,10 +94,10 @@ if __name__ == "__main__":
             "q2": {"keywords": ["Charles Babbage", "Charles"], "marks": 2}
         },
         "answer_set": {
-            "s1": {"q1":"The father alam of modern computer is Ala Turin Ala Turin Ala Turing",
-                   "q2":"The father of computer is Charles Babbage"},
-            "s2": {"q1":"The father alam of modern computer is Alan Turing",
-                    "q2":"The father of computer is Charls Babage"}
+            "s1": {"q1": "The father alam of modern computer is Ala Turin Ala Turin Ala Turing",
+                   "q2": "The father of computer is Charles Babbage"},
+            "s2": {"q1": "",
+                   "q2": ""}
         }
     }
 

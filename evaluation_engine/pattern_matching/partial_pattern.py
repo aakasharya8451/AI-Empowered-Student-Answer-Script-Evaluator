@@ -6,7 +6,7 @@ from typing import List
 class PartialPatternMatching:
     def __init__(self, keyword_set: List[str], answer: str) -> None:
         """Constructor for PartialPatternMatching
-        
+
         :param keyword_set: list containing all keywords related to answer
         :type keyword_set: List[str]
         :param answer: student answer string
@@ -24,6 +24,9 @@ class PartialPatternMatching:
 
         if not isinstance(answer, str):
             raise TypeError("Answer must be a string")
+
+        if not answer.strip():
+            raise TypeError("Answer must be an empty string")
 
         self.keyword_set = keyword_set
         self.answer = answer
@@ -54,13 +57,13 @@ class PartialPatternMatching:
                 strX = ""
                 for j in range(i, i + word):
                     strX += temp_substring[j] + " "
-                answer_substring.append(strX[:len(strX) - 1])
+                answer_substring.append(strX.strip())
 
         return answer_substring
 
     def __jaroEditMapFunction(self, jaro: float, edit: int) -> float:
         """Maps Jaro-Winkler distance and edit distance values to a value between 0 and 1
-        
+
         :param jaro: The Jaro-Winkler distance between a keyword and a substring of the student's answer
         :type jaro: float
         :param edit: The edit distance between a keyword and a substring of the student's answer
@@ -79,7 +82,7 @@ class PartialPatternMatching:
 
     def run(self) -> List[float]:
         """Calculates the partial pattern match value for each keyword in the keyword set
-        
+
         :return: A list of partial pattern match values, one for each keyword in the keyword set
         :rtype: list of float
         :raises ValueError: If an error occurs during the calculation of a partial pattern match value
@@ -94,8 +97,10 @@ class PartialPatternMatching:
                 edit_distance_hashmap = [0] * len(answer_substring)
 
                 for j in range(len(answer_substring)):
-                    jaro_winkler_distance_hashmap[j] = jaroWinkler(keyword.lower(), answer_substring[j].lower())
-                    edit_distance_hashmap[j] = editDistance(keyword.lower(), answer_substring[j].lower())
+                    jaro_winkler_distance_hashmap[j] = jaroWinkler(
+                        keyword.lower(), answer_substring[j].lower())
+                    edit_distance_hashmap[j] = editDistance(
+                        keyword.lower(), answer_substring[j].lower())
 
                 combine_jaro_edit_hashmap = list(
                     map(self.__jaroEditMapFunction, jaro_winkler_distance_hashmap, edit_distance_hashmap))

@@ -75,6 +75,7 @@ class FirebaseQuery:
             student_collections_ref = db.collection(
                 u'tests').document(u'{}'.format(self.testid))
             student_collections = student_collections_ref.collections()
+            test_detail_doc = db.collection(u'testDetails').document(u'{}'.format(self.testid))
             for student in student_collections:
                 for question in student.stream():
                     path = u"tests/{}/{}/{}".format(self.testid,
@@ -82,6 +83,7 @@ class FirebaseQuery:
                     marks = assigned_marks.get(student.id, "").get(question.id)
                     doc_ref = db.document(path)
                     doc_ref.update({u'marks': marks})
+            test_detail_doc.update({u'evaluationStatus' : True})
             return True
         except Exception as e:
             raise FirebaseQuerryError(

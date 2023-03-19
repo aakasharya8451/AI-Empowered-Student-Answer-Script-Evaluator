@@ -1,15 +1,14 @@
 from flask import Flask
-from flask_jwt_extended import JWTManager
 from config.config_firebase import FirebaseHandler
-# from redis import Redis
 from config.config import get_config
 from routes.auth_api import auth_api
 from routes.evaluate_api import evaluate_api
 from routes.logout_api import logout_api
 from flask_cors import CORS 
+from config.config import jwt
 
 
-# redis_client = Redis()
+
 
 def create_app(config_name):
     """
@@ -27,11 +26,9 @@ def create_app(config_name):
         app.config.from_object(get_config(config_name))
         CORS(app, origins=['http://localhost:3000'])
 
-        jwt = JWTManager()
         jwt.init_app(app)
 
         FirebaseHandler()
-        # redis_client.init_app(app)
 
         app.register_blueprint(auth_api, url_prefix='/api/v1')
         app.register_blueprint(evaluate_api, url_prefix='/api/v1')

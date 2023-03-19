@@ -1,31 +1,29 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, get_jwt
 from firebase_admin import auth
-
 import sys
 import os
+
+# Add current working directory to sys path to access modules
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-# from config.config_firebase import FirebaseHandler
+from config.config_redis import RedisHandler
+from config.config import jwt, Config
 
 
-# FirebaseHandler()
+redis_client = RedisHandler().get_redis_client()
 
-# from app import jwt, redis_client
-
-
-# @jwt.token_in_blacklist_loader
-# def check_if_token_in_blacklist(decrypted_token):
-#     jti = decrypted_token["jti"]
-#     token_in_blacklist = redis_client.get(jti)
-#     return token_in_blacklist is not None
-
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header,decrypted_token):
+    jti = decrypted_token["jti"]
+    token_in_blacklist = redis_client.get(jti)
+    return token_in_blacklist is not None
 
 def revoke_authentication(user):
     jti = get_jwt()["jti"]
     print(jti)
-    # redis_client.set(jti, "", ex=app.config["JWT_ACCESS_TOKEN_EXPIRES"])
+    redis_client.set(jti, "", ex = Config.JWT_ACCESS_TOKEN_EXPIRES)
     return jsonify({"msg": "Successfully logged out", "user": user}), 200
 
 def authenticate(user, passwd):

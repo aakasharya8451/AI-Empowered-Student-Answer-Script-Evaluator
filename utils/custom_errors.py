@@ -12,3 +12,10 @@ class FirebaseQuerryError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+class RedisConnectionError(Exception):
+    """Exception raised when there is an error connecting to Redis."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)

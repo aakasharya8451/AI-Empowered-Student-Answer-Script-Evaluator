@@ -1,9 +1,12 @@
 from firebase_admin import credentials, initialize_app, firestore
 import sys
 import os
+from dotenv import load_dotenv
 current_working_directory = os.getcwd()
+load_dotenv(os.path.join(current_working_directory, '.env'))
 sys.path.insert(0, current_working_directory)
 
+# Add current working directory to sys path to access modules
 from utils.custom_errors import FirebaseConnectionError
 
 

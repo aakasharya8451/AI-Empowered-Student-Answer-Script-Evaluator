@@ -1,6 +1,10 @@
-import os
 from redis import Redis
+import os
+from dotenv import load_dotenv
+current_working_directory = os.getcwd()
+load_dotenv(os.path.join(current_working_directory, '.env'))
 
+# Add current working directory to sys path to access modules
 from utils.custom_errors import RedisConnectionError
 
 
@@ -11,10 +15,10 @@ class RedisHandler:
         :raises RedisConnectionError: If there is an error connecting to Redis.
         """
 
-        redis_host = os.getenv('REDIS_HOST', 'localhost')
-        redis_port = os.getenv('REDIS_PORT', 6379)
-        redis_db = os.getenv('REDIS_DB', 0)
-        redis_password = os.getenv('REDIS_PASSWORD', None)
+        redis_host = os.getenv('REDIS_HOST')
+        redis_port = os.getenv('REDIS_PORT')
+        redis_db = os.getenv('REDIS_DB')
+        redis_password = os.getenv('REDIS_PASSWORD')
 
         try:
             with Redis(

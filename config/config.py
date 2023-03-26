@@ -1,12 +1,9 @@
 from flask_jwt_extended import JWTManager
-from datetime import datetime, timedelta
-
-# expires = datetime.now() + timedelta(seconds=app.config["JWT_ACCESS_TOKEN_EXPIRES"])
 import os
 from dotenv import load_dotenv
-# print(datetime.now() + timedelta(seconds=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))))
-basedir = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(basedir, '.env'))
+current_working_directory = os.getcwd()
+load_dotenv(os.path.join(current_working_directory, '.env'))
+
 
 jwt = JWTManager()
 
@@ -18,9 +15,7 @@ class Config:
     SECRET_KEY: str = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY: str = os.getenv('JWT_SECRET_KEY')
     JWT_TOKEN_LOCATION: str = os.getenv('JWT_TOKEN_LOCATION')
-    print(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'), type(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
-    JWT_ACCESS_TOKEN_EXPIRES: int = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
-    # JWT_ACCESS_TOKEN_EXPIRES: int = os.getenv('JWT_ACCESS_TOKEN_EXPIRES')
+    JWT_ACCESS_TOKEN_EXPIRES: int = os.getenv('JWT_ACCESS_TOKEN_EXPIRES')
 
 
 

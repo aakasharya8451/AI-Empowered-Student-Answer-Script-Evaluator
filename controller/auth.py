@@ -22,7 +22,6 @@ def check_if_token_in_blacklist(jwt_header,decrypted_token):
 
 def revoke_authentication(user):
     jti = get_jwt()["jti"]
-    print(jti)
     redis_client.set(jti, "", ex = Config.JWT_ACCESS_TOKEN_EXPIRES)
     return jsonify({"msg": "Successfully logged out", "user": user}), 200
 

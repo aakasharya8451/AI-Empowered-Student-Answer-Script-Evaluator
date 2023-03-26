@@ -22,7 +22,7 @@ def create_app(config_name):
     try:
         app = Flask(__name__)
         app.config.from_object(get_config(config_name))
-        CORS(app, origins=['http://localhost:3000'])
+        CORS(app, origins = '*')
 
         jwt.init_app(app)
 

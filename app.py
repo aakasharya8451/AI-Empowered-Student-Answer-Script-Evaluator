@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 from config.config_firebase import FirebaseHandler
 from config.config import get_config
@@ -6,9 +7,6 @@ from routes.evaluate_api import evaluate_api
 from routes.logout_api import logout_api
 from flask_cors import CORS 
 from config.config import jwt
-
-
-
 
 def create_app(config_name):
     """
@@ -36,14 +34,14 @@ def create_app(config_name):
 
         return app
 
+    except FileNotFoundError as e:
+        logging.error(f'Error creating app: {str(e)}')
+        raise Exception('File not found')
+    except ValueError as e:
+        logging.error(f'Error creating app: {str(e)}')
+        raise Exception('Invalid value')
     except Exception as e:
-        raise Exception(f'Error creating app: {str(e)}')
+        logging.error(f'Error creating app: {str(e)}')
+        raise Exception('Error creating app')
 
-
-if __name__ == '__main__':
-    try:
-        app = create_app('development')
-        app.run()
-
-    except Exception as e:
-        print(f'Error running app: {str(e)}')
+app = create_app('production')

@@ -12,13 +12,6 @@ from controller.auth import revoke_authentication
 
 logout_api = Blueprint('logout_api', __name__)
 
-# @logout_api.route("/logout", methods=["DELETE"])
-# @jwt_required()
-# def logout():
-    # jti = get_jwt()["jti"]
-    # redis_client.set(jti, "", ex=app.config["JWT_ACCESS_TOKEN_EXPIRES"])
-    # return jsonify({"message": "Successfully logged out"}), 200
-
 @logout_api.route("/logout", methods=["DELETE"])
 @jwt_required()
 def logout():

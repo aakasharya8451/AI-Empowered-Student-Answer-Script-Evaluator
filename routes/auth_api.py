@@ -1,4 +1,4 @@
-# from controller.auth import firebase_auth_test
+from typing import Tuple, Any, Dict
 from flask import Blueprint, jsonify, request
 import sys
 import os
@@ -7,66 +7,41 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from controller.auth import authenticate, firebase_auth_test
+from controller.auth import AuthenticationHandler
 
 
-auth_api = Blueprint('auth_api', __name__)
+class AuthHandlerAPI:
+    def __init__(self) -> None:
+        """
+        Initialize AuthHandlerAPI class.
+        """
+        self.ah = AuthenticationHandler()
+        self.auth_api = Blueprint('auth_api', __name__)
 
+    def register_routes(self) -> None:
+        """
+        Register routes for the AuthHandlerAPI class.
+        """
+        self.auth_api.route('/auth', methods=["POST"])(self.auth)
 
-@auth_api.route('/auth', methods=["POST"])
-def auth():
-    """
-    Endpoint to handle user authentication.
+    def auth(self) -> Tuple[Dict[str, Any], int]:
+        """
+        Endpoint to handle user authentication.
 
-    :return: JSON response containing the authentication token.
-    :raises Exception: If there's an error verifying the Firebase ID token or authenticating the user wih error code 400.
-    """
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+        :return: JSON response containing the authentication token.
+        :raises Exception: If there's an error verifying the Firebase ID token or authenticating the user with error code 400.
+        """
+        if not request.is_json:
+            return jsonify({"msg": "Missing JSON in request"}), 400
 
-    if 'idToken' in request.json:
-        id_token = request.json.get('idToken')
-        try:
-            return firebase_auth_test(id_token)
-        except Exception as e:
-            return jsonify({"msg":f"Error verifying Firebase ID token: {str(e)}"}), 400
-    else:
-        try:
-            return authenticate(request.json.get("user"), request.json.get("password"))
-        except Exception as e:
-            return jsonify({"msg":f"Error authenticating user: {str(e)}"}), 400
-
-
-
-# @auth_api.route('/auth', methods=["POST"])
-# def auth():
-    
-#     if not request.is_json:
-#         return jsonify({"msg": "Missing JSON in request"}), 400
-
-#     # username = request.json.get("user", None)
-#     # password = request.json.get("password", None)
-
-#     # if not username:
-#     #     return jsonify({"msg": "Missing username parameter"}), 400
-#     # if not password:
-#     #     return jsonify({"msg": "Missing password parameter"}), 400
-
-#     # return authenticate(username, password)
-#     id_token = request.json.get('idToken')
-#     return firebase_auth_test(id_token)
-
-
-    # if 'idToken' in request.json:
-    #     id_token = request.json.get('idToken')
-    #     try:
-    #         return firebase_auth_test(id_token)
-    #     except Exception as e:
-    #         return jsonify({"msg": "Error verifying Firebase ID token"}), 400
-    # else:
-    #     try:
-    #         return authenticate(request.json)
-    #     except Exception as e:
-    #         return Exception({"msg": "Error authenticating user"}), 400
-    # # else:
-    # #     return jsonify({"msg": "Missing username id_token"}), 400
+        if 'idToken' in request.json:
+            id_token = request.json.get('idToken')
+            try:
+                return  self.ah.firebase_auth_test(id_token)
+            except Exception as e:
+                return jsonify({"msg":f"Error verifying Firebase ID token: {str(e)}"}), 400
+        else:
+            try:
+                return  self.ah.authenticate(request.json.get("user"), request.json.get("password"))
+            except Exception as e:
+                return jsonify({"msg":f"Error authenticating user: {str(e)}"}), 400

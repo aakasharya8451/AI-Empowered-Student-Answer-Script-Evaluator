@@ -4,7 +4,7 @@ from config.config_firebase import FirebaseHandler
 from config.config import get_config
 from routes.auth_api import AuthHandlerAPI
 from routes.evaluate_api import EvaluateAPI
-# from routes.logout_api import logout_api
+from routes.logout_api import LogoutAPI
 from flask_cors import CORS 
 from config.config import jwt
 
@@ -34,7 +34,10 @@ def create_app(config_name):
         evaluate_api_handler = EvaluateAPI()
         evaluate_api_handler.register_routes()
         app.register_blueprint(evaluate_api_handler.evaluate_api, url_prefix='/api/v1')
-        # app.register_blueprint(logout_api, url_prefix='/api/v1')
+
+        logout_api_handler = LogoutAPI()
+        logout_api_handler.register_routes()
+        app.register_blueprint(logout_api_handler.logout_api, url_prefix='/api/v1')
 
         return app
 

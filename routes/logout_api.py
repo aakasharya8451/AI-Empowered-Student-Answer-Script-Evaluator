@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify
+from typing import Tuple, Any, Dict
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import sys
 import os
@@ -7,29 +8,34 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from controller.auth import revoke_authentication
+from controller.auth import AuthenticationHandler
 
 
-logout_api = Blueprint('logout_api', __name__)
+class LogoutAPI:
+    def __init__(self) -> None:
+        """
+        Initialize LogoutAPI class.
+        """
+        self.logout_api = Blueprint('logout_api', __name__)
+        self.ah = AuthenticationHandler()
 
-@logout_api.route("/logout", methods=["DELETE"])
-@jwt_required()
-def logout():
-    """
-    Logout user by revoking authentication token.
+    def register_routes(self) -> None:
+        """
+        Register routes for the LogoutAPI class.
+        """
+        self.logout_api.route("/logout", methods=["DELETE"])(self.logout)
 
-    :return: JSON response indicating successful logout.
-    """
+    @jwt_required()
+    def logout(self) -> Tuple[Dict[str, Any], int]:
+        """
+        Logout user by revoking authentication token.
 
-    try:
-        # Get user identity from JWT token
-        user = get_jwt_identity()
+        :return: JSON response indicating successful logout.
+        """
+        try:
+            user = get_jwt_identity()
+            self.ah.revoke_authentication(user)
+            return jsonify({"msg": "Logout successful"}), 200
 
-        # Revoke authentication token
-        revoke_authentication(user)
-
-        return jsonify({"msg": "Logout successful"}), 200
-
-    except Exception as e:
-        # Log error and return error message
-        return jsonify({"msg": f"Internal server error {e}"}), 500
+        except Exception as e:
+            return jsonify({"msg": f"Internal server error {e}"}), 500

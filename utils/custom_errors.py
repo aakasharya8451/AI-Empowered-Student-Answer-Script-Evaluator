@@ -6,7 +6,7 @@ class FirebaseConnectionError(Exception):
         super().__init__(self.message)
 
 
-class FirebaseQuerryError(Exception):
+class FirebaseQueryError(Exception):
     """Exception raised when unable to fetch data from Firebase."""
 
     def __init__(self, message):

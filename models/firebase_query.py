@@ -7,20 +7,19 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from utils.custom_errors import FirebaseQuerryError
+from utils.custom_errors import FirebaseQueryError
 
 
 class FirebaseQuery:
-    def __init__(self, testid: str) -> None:
+    def __init__(self, test_id: str) -> None:
         """
         Create a new FirebaseQuery instance to fetch test and question data from Firebase
 
         :param testid: The ID of the test to fetch data for
         :type testid: str
         """
-        self.testid = testid
+        self.test_id = test_id
         self.db = firestore.client()
-        # self.firebase_handler = firebase_handler
 
     def fetch_tests(self) -> Dict[str, Dict[str, str]]:
         """
@@ -32,7 +31,7 @@ class FirebaseQuery:
         """
         try:
             student_collections_ref = self.db.collection(
-                u'tests').document(u'{}'.format(self.testid))
+                u'tests').document(self.test_id)
             student_collections = student_collections_ref.collections()
 
             test_answer_set = {}
@@ -44,7 +43,7 @@ class FirebaseQuery:
             return test_answer_set
 
         except Exception as e:
-            raise FirebaseQuerryError(f"Error fetching test data: {e}")
+            raise FirebaseQueryError(f"Error fetching test data: {e}")
 
     def fetch_questions(self) -> Dict[str, Dict[str, str]]:
         """
@@ -54,14 +53,19 @@ class FirebaseQuery:
         :rtype: Dict[str, Dict[str, str]]
         :raises FirebaseQuerryError: If there is an error fetching question data from Firebase
         """
-        try:
-            test_question_set = self.db.collection(
-                u'questionset').document(u'{}'.format(self.testid)).get().to_dict()
-            return test_question_set
+    def fetch_questions(self) -> Dict[str, Dict[str, str]]:
+        """
+        Fetches question data for the current test ID
 
+        :return: A dictionary containing question data
+        :rtype: Dict[str, Dict[str, str]]
+        :raises FirebaseQueryError: If there is an error fetching question data from Firebase
+        """
+        try:
+            test_question_set = self.db.collection(u'questionset').document(self.test_id).get().to_dict()
+            return test_question_set
         except Exception as e:
-            raise FirebaseQuerryError(
-                f"Error fetching question data: {e}")
+            raise FirebaseQueryError(f"Error fetching question data: {e}")
     
     def push_marks(self,assigned_marks):
         """Updates the 'marks' field for all questions in the test that were attempted by students.
@@ -72,30 +76,18 @@ class FirebaseQuery:
         :raises FirebaseQuerryError: if there was an error updating the marks.
         """
         try:
-            student_collections_ref = self.db.collection(
-                u'tests').document(u'{}'.format(self.testid))
-            student_collections = student_collections_ref.collections()
-            test_detail_doc = self.db.collection(u'testDetails').document(u'{}'.format(self.testid))
-            for student in student_collections:
+            students_collection_ref = self.db.collection(
+                u'tests').document(self.test_id).collections()
+            test_detail_doc = self.db.collection(u'testDetails').document(self.test_id)
+
+            for student in students_collection_ref:
                 for question in student.stream():
-                    path = u"tests/{}/{}/{}".format(self.testid,
-                                                    student.id, question.id)
-                    marks = assigned_marks.get(student.id, "").get(question.id)
+                    path = f"tests/{self.test_id}/{student.id}/{question.id}"
+                    marks = assigned_marks.get(student.id, {}).get(question.id)
                     doc_ref = self.db.document(path)
                     doc_ref.update({u'marks': marks})
-            test_detail_doc.update({u'evaluationStatus' : True})
+
+            test_detail_doc.update({u'evaluationStatus': True})
             return True
         except Exception as e:
-            raise FirebaseQuerryError(
-                f"Error fetching question data: {e}")
-
-
-if __name__ == "__main__":
-    let_marks = {'NC4xNH3w8IZ9twWwLycZKq9wxz93': {'q1': 9.5, 'q2': 2.0},
-               'SZUBmedhAOSCpSlfUovNINTQ8fr1': {'q1': 10.0, 'q2': 1.5}}
-    z = FirebaseQuery("PczMwm2P78Hi85gQzER8")
-
-    print(z.fetchTests())
-    print(z.fetchQuestions())
-    print(z.pushMarks(let_marks))
-
+            raise FirebaseQueryError(f"Error pushing marks: {e}")

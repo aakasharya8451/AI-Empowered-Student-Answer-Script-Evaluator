@@ -1,11 +1,8 @@
-from flask_jwt_extended import JWTManager
 import os
 from dotenv import load_dotenv
 current_working_directory = os.getcwd()
 load_dotenv(os.path.join(current_working_directory, '.env'))
 
-
-jwt = JWTManager()
 
 class Config:
     """A base configuration class.

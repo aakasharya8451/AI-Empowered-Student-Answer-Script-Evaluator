@@ -6,7 +6,7 @@ from routes.auth_api import AuthHandlerAPI
 from routes.evaluate_api import EvaluateAPI
 from routes.logout_api import LogoutAPI
 from flask_cors import CORS 
-from config.config import jwt
+from utils.jwt_utils import jwt
 
 def create_app(config_name):
     """

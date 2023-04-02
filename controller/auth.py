@@ -9,8 +9,8 @@ import os
 current_working_directory = os.getcwd()
 sys.path.insert(0, current_working_directory)
 
-from config.config_redis import RedisHandler
-from config.config import jwt, Config
+from config.config import Config
+from utils.jwt_utils import redis_client
 
 
 class AuthenticationHandler:
@@ -18,20 +18,7 @@ class AuthenticationHandler:
         """
         Initialize AuthenticationHandler with Redis client.
         """
-        self.redis_client = RedisHandler().get_redis_client()
-
-    @jwt.token_in_blocklist_loader
-    def check_if_token_in_blacklist(self, jwt_header: str, decrypted_token: dict) -> bool:
-        """
-        Check if the given token is in Redis blocklist.
-
-        :param jwt_header: str, JWT header
-        :param decrypted_token: dict, Decrypted JWT token
-        :return: bool, True if token is in blocklist, False otherwise
-        """
-        jti = decrypted_token["jti"]
-        token_in_blacklist = self.redis_client.get(jti)
-        return token_in_blacklist is not None
+        self.redis_client = redis_client
 
     def revoke_authentication(self, user: str) -> Tuple[Dict[str, Any], int]:
         """
@@ -40,6 +27,7 @@ class AuthenticationHandler:
         :param user: str, username
         :return: Tuple of JSON response and integer status code
         """
+        print(Config.JWT_ACCESS_TOKEN_EXPIRES)
         jti = get_jwt()["jti"]
         self.redis_client.set(jti, "", ex=Config.JWT_ACCESS_TOKEN_EXPIRES)
         return jsonify({"msg": "Successfully logged out", "user": user}), 200

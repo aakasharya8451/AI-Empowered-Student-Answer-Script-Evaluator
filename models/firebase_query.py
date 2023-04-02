@@ -22,7 +22,7 @@ class FirebaseQuery:
         self.db = firestore.client()
         # self.firebase_handler = firebase_handler
 
-    def fetchTests(self) -> Dict[str, Dict[str, str]]:
+    def fetch_tests(self) -> Dict[str, Dict[str, str]]:
         """
         Fetches test data for the current test ID
 
@@ -46,7 +46,7 @@ class FirebaseQuery:
         except Exception as e:
             raise FirebaseQuerryError(f"Error fetching test data: {e}")
 
-    def fetchQuestions(self) -> Dict[str, Dict[str, str]]:
+    def fetch_questions(self) -> Dict[str, Dict[str, str]]:
         """
         Fetches question data for the current test ID
 
@@ -63,7 +63,7 @@ class FirebaseQuery:
             raise FirebaseQuerryError(
                 f"Error fetching question data: {e}")
     
-    def pushMarks(self,assigned_marks):
+    def push_marks(self,assigned_marks):
         """Updates the 'marks' field for all questions in the test that were attempted by students.
 
         :param assigned_marks: a dictionary where the keys are student IDs and the values are dictionaries that map

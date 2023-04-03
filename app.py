@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 from config.config_firebase import FirebaseHandler
-from config.config import get_config
+from config.config import ConfigFactory
 from routes.auth_api import AuthHandlerAPI
 from routes.evaluate_api import EvaluateAPI
 from routes.logout_api import LogoutAPI
@@ -21,7 +21,7 @@ def create_app(config_name):
     
     try:
         app = Flask(__name__)
-        app.config.from_object(get_config(config_name))
+        app.config.from_object(ConfigFactory.get_config(config_name))
         CORS(app, origins = '*')
 
         jwt.init_app(app)
@@ -51,5 +51,5 @@ def create_app(config_name):
         logging.error(f'Error creating app: {str(e)}')
         raise Exception('Error creating app')
 
-app = create_app('production')
+app = create_app('testing')
 app.run()

@@ -41,7 +41,9 @@ class MarksAssigner:
             average = sum(final_match) / len(final_match)
             marks_allotted = average * self.max_marks
 
-            if 0.25 <= marks_allotted % math.floor(marks_allotted) < 0.75:
+            if marks_allotted == 0 or marks_allotted ==0.0:
+                return 0.0
+            elif 0.25 <= marks_allotted % math.floor(marks_allotted) < 0.75:
                 return math.floor(marks_allotted) + 0.5
             else:
                 return round(marks_allotted)
@@ -54,3 +56,7 @@ class MarksAssigner:
 if __name__ == "__main__":
     x = MarksAssigner([0, 1], [0.988, 1], 5).assign()
     print(x)
+
+from sklearn.impute import SimpleImputer as si
+impute = si(strategy="median")
+result = impute.fit(housing)
